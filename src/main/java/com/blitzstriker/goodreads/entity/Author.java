@@ -16,7 +16,9 @@ public class Author {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String firstName;
+
+    private String lastName;
 
     private String image;
 
