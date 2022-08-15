@@ -20,7 +20,6 @@ public class UserBook {
     private Date startDate;
     private Date endDate;
     private String status;
-    private Integer rating;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)

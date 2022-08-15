@@ -7,6 +7,7 @@ import com.blitzstriker.goodreads.exceptions.ItemAlreadyExistsException;
 import com.blitzstriker.goodreads.exceptions.ResourceNotFoundException;
 import com.blitzstriker.goodreads.payload.user.RegisterDto;
 import com.blitzstriker.goodreads.payload.user.UserDto;
+import com.blitzstriker.goodreads.payload.user.UserResponse;
 import com.blitzstriker.goodreads.repositories.RoleRepository;
 import com.blitzstriker.goodreads.repositories.UserRepository;
 import com.blitzstriker.goodreads.services.UserService;
@@ -43,5 +44,11 @@ public class UserServiceImpl implements UserService {
 
         User savedUser = userRepository.save(user);
         return modelMapper.map(savedUser, UserDto.class);
+    }
+
+    @Override
+    public UserResponse getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        return modelMapper.map(user, UserResponse.class);
     }
 }
