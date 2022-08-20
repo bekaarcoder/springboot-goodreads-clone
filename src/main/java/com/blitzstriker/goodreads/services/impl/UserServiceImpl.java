@@ -71,4 +71,13 @@ public class UserServiceImpl implements UserService {
         User savedUser =  userRepository.save(user);
         return modelMapper.map(savedUser, UserResponse.class);
     }
+
+    @Override
+    public UserResponse deleteUserRole(UserRoleDto userRoleDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        Role role = roleRepository.findById(userRoleDto.getRoleId()).orElseThrow(() -> new ResourceNotFoundException("Role", "id", userRoleDto.getRoleId()));
+        user.getRoles().remove(role);
+        User savedUser =  userRepository.save(user);
+        return modelMapper.map(savedUser, UserResponse.class);
+    }
 }

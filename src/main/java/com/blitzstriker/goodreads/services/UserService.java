@@ -11,4 +11,5 @@ public interface UserService {
     UserResponse getUserById(Long userId);
     User getLoggedInUser();
     UserResponse updateUserRole(UserRoleDto userRoleDto, Long userId);
+    UserResponse deleteUserRole(UserRoleDto userRoleDto, Long userId);
 }

@@ -30,4 +30,10 @@ public class UserController {
         UserResponse user = userService.updateUserRole(userRoleDto, id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}/deleteRole")
+    public ResponseEntity<UserResponse> deleteUserRole(@Valid @RequestBody UserRoleDto userRoleDto, @PathVariable("id") Long id) {
+        UserResponse user = userService.deleteUserRole(userRoleDto, id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
 }
