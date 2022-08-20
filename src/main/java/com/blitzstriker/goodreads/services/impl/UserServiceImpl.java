@@ -8,10 +8,14 @@ import com.blitzstriker.goodreads.exceptions.ResourceNotFoundException;
 import com.blitzstriker.goodreads.payload.user.RegisterDto;
 import com.blitzstriker.goodreads.payload.user.UserDto;
 import com.blitzstriker.goodreads.payload.user.UserResponse;
+import com.blitzstriker.goodreads.payload.user.UserRoleDto;
 import com.blitzstriker.goodreads.repositories.RoleRepository;
 import com.blitzstriker.goodreads.repositories.UserRepository;
 import com.blitzstriker.goodreads.services.UserService;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +54,21 @@ public class UserServiceImpl implements UserService {
     public UserResponse getUserById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
         return modelMapper.map(user, UserResponse.class);
+    }
+
+    @Override
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    @Override
+    public UserResponse updateUserRole(UserRoleDto userRoleDto, Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        Role role = roleRepository.findById(userRoleDto.getRoleId()).orElseThrow(() -> new ResourceNotFoundException("Role", "id", userRoleDto.getRoleId()));
+        user.getRoles().add(role);
+        User savedUser =  userRepository.save(user);
+        return modelMapper.map(savedUser, UserResponse.class);
     }
 }

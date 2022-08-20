@@ -1,9 +1,11 @@
 package com.blitzstriker.goodreads.payload.user;
 
+import com.blitzstriker.goodreads.entity.Role;
 import com.blitzstriker.goodreads.payload.userbook.UserBookResponse;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class UserResponse {
@@ -12,4 +14,5 @@ public class UserResponse {
     private String lastName;
     private String email;
     private List<UserBookResponse> userBooks;
+    private Set<Role> roles;
 }
