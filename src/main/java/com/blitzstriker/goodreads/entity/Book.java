@@ -1,17 +1,13 @@
 package com.blitzstriker.goodreads.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Book {
@@ -29,7 +25,7 @@ public class Book {
     @Column(length = 10000)
     private String description;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinTable(
             name = "books_author",
             joinColumns = @JoinColumn(name = "book_id", referencedColumnName = "id"),
@@ -37,14 +33,47 @@ public class Book {
     )
     private Set<Author> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Rating> ratings;
 
+    @OneToMany(mappedBy = "book", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<BookShelf> bookShelves = new ArrayList<>();
+
     public void removeAuthor(Author author) {
-        this.getAuthors().remove(author);
+        this.authors.remove(author);
+        author.getBooks().remove(this);
     }
 
-    public void removeAuthors() {
-        this.getAuthors().clear();
+    public void removeAuthors(Set<Author> authors) {
+        this.authors.clear();
+        authors.forEach(author -> author.getBooks().remove(this));
+    }
+
+    public void addRating(Rating rating) {
+        if (!ratings.contains(rating)) {
+            ratings.add(rating);
+        }
+    }
+
+    public void removeRating(Rating rating) {
+        ratings.remove(rating);
+    }
+
+    public void updateRating(Rating rating) {
+        if(ratings.contains(rating)) {
+            int index = ratings.indexOf(rating);
+            Rating exists = ratings.get(index);
+            exists.setRating(rating.getRating());
+        }
+    }
+
+    public void addBookShelf(BookShelf bookShelf) {
+        if (!this.bookShelves.contains(bookShelf)) {
+            this.bookShelves.add(bookShelf);
+        }
+    }
+
+    public void removeBookShelf(BookShelf bookShelf) {
+        this.bookShelves.remove(bookShelf);
     }
 }

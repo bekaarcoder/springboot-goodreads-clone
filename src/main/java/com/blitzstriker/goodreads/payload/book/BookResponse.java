@@ -22,5 +22,5 @@ public class BookResponse {
 
     private String coverImage;
     private String description;
-    private Set<Author> authors;
+//    private Set<Author> authors;
 }

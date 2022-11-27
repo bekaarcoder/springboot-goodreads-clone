@@ -1,32 +1,34 @@
 package com.blitzstriker.goodreads.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.sql.Timestamp;
 
-@Entity
-@Data
+@Entity(name = "Rating")
+@Table(name = "rating")
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Rating {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private RatingId ratingId;
 
     @Column(nullable = false)
     private Integer rating;
 
-    @Column(length = 10000)
-    private String review;
-
     @ManyToOne(optional = false)
+    @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(optional = false)
+    @MapsId("bookId")
     @JoinColumn(name = "book_id")
     private Book book;
 

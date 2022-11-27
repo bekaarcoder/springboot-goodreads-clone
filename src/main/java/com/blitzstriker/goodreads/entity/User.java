@@ -1,10 +1,9 @@
 package com.blitzstriker.goodreads.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -13,7 +12,8 @@ import java.util.Set;
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {"email"})
 })
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
@@ -40,9 +40,30 @@ public class User {
     )
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<UserBook> userBooks;
 
-    @OneToMany(mappedBy = "user")
-    private List<Rating> ratings;
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Rating> ratings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Shelf> shelves = new ArrayList<>();
+
+    public void addRating(Rating rating) {
+        if (!ratings.contains(rating)) {
+            ratings.add(rating);
+        }
+    }
+
+    public void removeRating(Rating rating) {
+        ratings.remove(rating);
+    }
+
+    public void updateRating(Rating rating) {
+        if(ratings.contains(rating)) {
+            int index = ratings.indexOf(rating);
+            Rating exists = ratings.get(index);
+            exists.setRating(rating.getRating());
+        }
+    }
 }
