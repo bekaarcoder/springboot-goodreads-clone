@@ -47,19 +47,22 @@ public class GoodreadsApplication implements CommandLineRunner {
             List<Role> roles = List.of(role1, role2);
             roleRepository.saveAll(roles);
 
-            User gwen = userRepository.findById(1L).get();
+            /*User gwen = userRepository.findById(1L).get();
             User tony = userRepository.findById(2L).get();
 
-            /*Book b1 = bookRepository.findById(1L).get();
+            Book b1 = bookRepository.findById(1L).get();
             Book b2 = bookRepository.findById(2L).get();
             Book b3 = bookRepository.findById(3L).get();
             Book b4 = bookRepository.findById(4L).get();*/
 
-            List<Shelf> gwenShelves = shelfRepository.findShelfByUser(gwen);
-            gwenShelves.forEach(shelf -> {
+            /*List<Shelf> gwenShelf = shelfRepository.findShelfByUser(gwen);
+            gwenShelf.forEach(shelf -> {
                 System.out.println(shelf.getName());
                 bookShelfRepository.findBookShelfByShelf(shelf).forEach(bookShelf -> System.out.println(bookShelf.getBook().getName()));
-            });
+            });*/
+
+            /*Shelf shelf = shelfRepository.findById(1L).get();
+            shelfRepository.delete(shelf);*/
         } catch (Exception e) {
             e.printStackTrace();
         }
