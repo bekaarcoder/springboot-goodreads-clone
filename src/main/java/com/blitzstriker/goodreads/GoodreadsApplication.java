@@ -23,6 +23,7 @@ public class GoodreadsApplication implements CommandLineRunner {
     private final RatingRepository ratingRepository;
     private final ShelfRepository shelfRepository;
     private final BookShelfRepository bookShelfRepository;
+    private final UserBookRepository userBookRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(GoodreadsApplication.class, args);
@@ -63,6 +64,12 @@ public class GoodreadsApplication implements CommandLineRunner {
 
             /*Shelf shelf = shelfRepository.findById(1L).get();
             shelfRepository.delete(shelf);*/
+
+            User tony = userRepository.findById(2L).get();
+            List<UserBook> userBooks =userBookRepository.findUserBookByUser(tony);
+            userBooks.forEach(userBook -> {
+                System.out.println(userBook.getBook().getName());
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

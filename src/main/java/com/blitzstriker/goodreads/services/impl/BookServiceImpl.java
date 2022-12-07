@@ -61,7 +61,12 @@ public class BookServiceImpl implements BookService {
         bookRepository.delete(book);
     }
 
-    private Book findAndUpdateAuthor(BookDto bookDto, Book book) {
+    @Override
+    public Book getBookById(Long id) {
+        return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
+    }
+
+    private void findAndUpdateAuthor(BookDto bookDto, Book book) {
         Author existingAuthor = authorRepository.findByFirstNameAndLastName(bookDto.getAuthorFirstName(), bookDto.getAuthorLastName());
         if(existingAuthor != null) {
             book.getAuthors().add(existingAuthor);
@@ -71,6 +76,5 @@ public class BookServiceImpl implements BookService {
             author.setLastName(bookDto.getAuthorLastName());
             book.getAuthors().add(author);
         }
-        return book;
     }
 }

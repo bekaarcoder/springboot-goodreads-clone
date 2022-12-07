@@ -1,5 +1,6 @@
 package com.blitzstriker.goodreads.controllers;
 
+import com.blitzstriker.goodreads.entity.ReadingStatus;
 import com.blitzstriker.goodreads.payload.ApiResponse;
 import com.blitzstriker.goodreads.payload.book.BookDto;
 import com.blitzstriker.goodreads.payload.book.BookResponse;
@@ -49,9 +50,15 @@ public class BookController {
         return new ResponseEntity<>(new ApiResponse("Book deleted successfully"), HttpStatus.OK);
     }
 
-    @PostMapping("/{bookId}/add/{userId}")
-    public ResponseEntity<UserBookResponse> addBookToLibrary(@Valid @RequestBody UserBookDto userBookDto, @PathVariable("bookId") Long bookId, @PathVariable("userId") Long userId) {
-        UserBookResponse response = userBookService.addBookToLibrary(userBookDto, bookId, userId);
+    @PostMapping("/addToReadingShelf/{bookId}/{shelf}")
+    public ResponseEntity<ApiResponse> addBookToReadingShelf(@PathVariable("bookId") Long bookId, @PathVariable("shelf") ReadingStatus shelf) {
+        userBookService.addBookToReadingShelf(bookId, shelf);
+        return new ResponseEntity<>(new ApiResponse("Book added successfully"), HttpStatus.OK);
+    }
+
+    @PostMapping("/{bookId}/add")
+    public ResponseEntity<UserBookResponse> addBookToLibrary(@Valid @RequestBody UserBookDto userBookDto, @PathVariable("bookId") Long bookId) {
+        UserBookResponse response = userBookService.addBookToLibrary(userBookDto, bookId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

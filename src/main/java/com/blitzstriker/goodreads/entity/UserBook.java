@@ -19,7 +19,9 @@ public class UserBook {
 
     private Date startDate;
     private Date endDate;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private ReadingStatus status;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_id", nullable = false)
