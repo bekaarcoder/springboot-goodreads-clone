@@ -19,6 +19,7 @@ public class RegisterDto {
     @Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
 
-    @Email(message = "Email is invalid")
+    @NotEmpty(message = "Email is required")
+    @Email(regexp = ".+[@].+[\\.].+", message = "Email is invalid")
     private String email;
 }
