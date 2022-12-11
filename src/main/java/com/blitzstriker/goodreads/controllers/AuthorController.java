@@ -2,12 +2,14 @@ package com.blitzstriker.goodreads.controllers;
 
 import com.blitzstriker.goodreads.payload.ApiResponse;
 import com.blitzstriker.goodreads.payload.author.AuthorDto;
+import com.blitzstriker.goodreads.payload.author.AuthorResponse;
 import com.blitzstriker.goodreads.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/authors")
@@ -39,6 +41,13 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> updateAuthor(@Valid @RequestBody AuthorDto authorDto, @PathVariable("id") Long id) {
         AuthorDto updatedAuthor = authorService.updateAuthor(authorDto, id);
         return new ResponseEntity<>(updatedAuthor, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<List<AuthorResponse>> findAuthorsByName(@PathVariable("keyword") String keyword) {
+        List<AuthorResponse> authors = authorService.findAuthorByName(keyword);
+        return new ResponseEntity<>(authors, HttpStatus.OK);
     }
 
 }

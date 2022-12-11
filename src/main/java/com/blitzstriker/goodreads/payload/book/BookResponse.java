@@ -1,6 +1,7 @@
 package com.blitzstriker.goodreads.payload.book;
 
 import com.blitzstriker.goodreads.entity.Author;
+import com.blitzstriker.goodreads.payload.author.AuthorResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,5 +23,5 @@ public class BookResponse {
 
     private String coverImage;
     private String description;
-//    private Set<Author> authors;
+    private Set<AuthorResponse> authors;
 }

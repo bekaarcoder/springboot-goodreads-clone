@@ -3,10 +3,14 @@ package com.blitzstriker.goodreads.services.impl;
 import com.blitzstriker.goodreads.entity.Author;
 import com.blitzstriker.goodreads.exceptions.ResourceNotFoundException;
 import com.blitzstriker.goodreads.payload.author.AuthorDto;
+import com.blitzstriker.goodreads.payload.author.AuthorResponse;
 import com.blitzstriker.goodreads.repositories.AuthorRepository;
 import com.blitzstriker.goodreads.services.AuthorService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthorServiceImpl implements AuthorService {
@@ -46,5 +50,11 @@ public class AuthorServiceImpl implements AuthorService {
     public AuthorDto getAuthor(Long authorId) {
         Author author = authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author", "id", authorId));
         return modelMapper.map(author, AuthorDto.class);
+    }
+
+    @Override
+    public List<AuthorResponse> findAuthorByName(String name) {
+        List<Author> authors = authorRepository.findAuthorByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
+        return authors.stream().map(author -> modelMapper.map(author, AuthorResponse.class)).collect(Collectors.toList());
     }
 }

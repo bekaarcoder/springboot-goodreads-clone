@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,9 +25,11 @@ public class BookDto {
     private String coverImage;
     private String description;
 
-    @NotEmpty(message = "Author name is required")
+    private List<Long> authorIds = new ArrayList<>();
+
+    /*@NotEmpty(message = "Author name is required")
     private String authorFirstName;
 
     @NotEmpty(message = "Author name is required")
-    private String authorLastName;
+    private String authorLastName;*/
 }
