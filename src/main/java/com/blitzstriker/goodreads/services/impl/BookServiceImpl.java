@@ -5,15 +5,21 @@ import com.blitzstriker.goodreads.entity.Book;
 import com.blitzstriker.goodreads.exceptions.ResourceNotFoundException;
 import com.blitzstriker.goodreads.payload.book.BookDto;
 import com.blitzstriker.goodreads.payload.book.BookResponse;
+import com.blitzstriker.goodreads.payload.book.BooksResponse;
 import com.blitzstriker.goodreads.repositories.AuthorRepository;
 import com.blitzstriker.goodreads.repositories.BookRepository;
 import com.blitzstriker.goodreads.services.BookService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -66,19 +72,31 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "id", id));
     }
 
+    @Override
+    public BooksResponse getAllBooks(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Book> bookPages = bookRepository.findAll(pageable);
+
+        List<Book> books = bookPages.getContent();
+        List<BookResponse> content = books.stream().map(book -> modelMapper.map(book, BookResponse.class)).toList();
+        BooksResponse booksResponse = new BooksResponse();
+        booksResponse.setBooks(content);
+        booksResponse.setPageNumber(bookPages.getNumber());
+        booksResponse.setPageSize(bookPages.getSize());
+        booksResponse.setTotalPages(bookPages.getTotalPages());
+        booksResponse.setTotalElements(bookPages.getNumberOfElements());
+        booksResponse.setIsLast(bookPages.isLast());
+        booksResponse.setHasNext(bookPages.hasNext());
+        booksResponse.setHasPrevious(bookPages.hasPrevious());
+        return booksResponse;
+    }
+
     private void findAndUpdateAuthor(BookDto bookDto, Book book) {
-        /*Author existingAuthor = authorRepository.findByFirstNameAndLastName(bookDto.getAuthorFirstName(), bookDto.getAuthorLastName());
-        if(existingAuthor != null) {
-            book.getAuthors().add(existingAuthor);
-        } else {
-            Author author = new Author();
-            author.setFirstName(bookDto.getAuthorFirstName());
-            author.setLastName(bookDto.getAuthorLastName());
-            book.getAuthors().add(author);
-        }*/
-        bookDto.getAuthorIds().forEach(authorId -> {
+        /*bookDto.getAuthorIds().forEach(authorId -> {
             Author author = authorRepository.findById(authorId).orElseThrow(() -> new ResourceNotFoundException("Author", "id", authorId));
             book.getAuthors().add(author);
-        });
+        });*/
+        Author author = authorRepository.findById(bookDto.getAuthorId()).orElseThrow(() -> new ResourceNotFoundException("Author", "id", bookDto.getAuthorId()));
+        book.getAuthors().add(author);
     }
 }

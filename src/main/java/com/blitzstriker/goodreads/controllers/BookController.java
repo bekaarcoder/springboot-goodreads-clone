@@ -1,9 +1,11 @@
 package com.blitzstriker.goodreads.controllers;
 
+import com.blitzstriker.goodreads.config.AppConstants;
 import com.blitzstriker.goodreads.entity.ReadingStatus;
 import com.blitzstriker.goodreads.payload.ApiResponse;
 import com.blitzstriker.goodreads.payload.book.BookDto;
 import com.blitzstriker.goodreads.payload.book.BookResponse;
+import com.blitzstriker.goodreads.payload.book.BooksResponse;
 import com.blitzstriker.goodreads.payload.userbook.UserBookDto;
 import com.blitzstriker.goodreads.payload.userbook.UserBookResponse;
 import com.blitzstriker.goodreads.services.BookService;
@@ -48,6 +50,14 @@ public class BookController {
     public ResponseEntity<ApiResponse> deleteBook(@PathVariable("id") Long id) {
         bookService.deleteBook(id);
         return new ResponseEntity<>(new ApiResponse("Book deleted successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<BooksResponse> getAllBooks(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize
+    ) {
+        return new ResponseEntity<>(bookService.getAllBooks(pageNumber, pageSize), HttpStatus.OK);
     }
 
     @PostMapping("/addToReadingShelf/{bookId}/{shelf}")
