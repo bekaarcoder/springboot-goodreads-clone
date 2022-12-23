@@ -4,9 +4,13 @@ import com.blitzstriker.goodreads.entity.Author;
 import com.blitzstriker.goodreads.exceptions.ResourceNotFoundException;
 import com.blitzstriker.goodreads.payload.author.AuthorDto;
 import com.blitzstriker.goodreads.payload.author.AuthorResponse;
+import com.blitzstriker.goodreads.payload.author.AuthorsResponse;
 import com.blitzstriker.goodreads.repositories.AuthorRepository;
 import com.blitzstriker.goodreads.services.AuthorService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +60,25 @@ public class AuthorServiceImpl implements AuthorService {
     public List<AuthorResponse> findAuthorByName(String name) {
         List<Author> authors = authorRepository.findAuthorByFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(name, name);
         return authors.stream().map(author -> modelMapper.map(author, AuthorResponse.class)).collect(Collectors.toList());
+    }
+
+    @Override
+    public AuthorsResponse getAllAuthors(Integer pageNumber, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Author> authorsPage = authorRepository.findAll(pageable);
+
+        List<Author> authors = authorsPage.getContent();
+        List<AuthorResponse> content = authors.stream().map(author -> modelMapper.map(author, AuthorResponse.class)).toList();
+        AuthorsResponse authorsResponse = new AuthorsResponse();
+        authorsResponse.setAuthors(content);
+        authorsResponse.setCurrentPage(authorsPage.getNumber());
+        authorsResponse.setPageNumber(authorsPage.getNumber());
+        authorsResponse.setHasNext(authorsPage.hasNext());
+        authorsResponse.setIsLast(authorsPage.isLast());
+        authorsResponse.setHasPrevious(authorsPage.hasPrevious());
+        authorsResponse.setPageSize(authorsPage.getSize());
+        authorsResponse.setTotalElements(authorsPage.getNumberOfElements());
+        authorsResponse.setTotalPages(authorsPage.getTotalPages());
+        return authorsResponse;
     }
 }

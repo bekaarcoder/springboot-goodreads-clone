@@ -88,6 +88,7 @@ public class BookServiceImpl implements BookService {
         booksResponse.setIsLast(bookPages.isLast());
         booksResponse.setHasNext(bookPages.hasNext());
         booksResponse.setHasPrevious(bookPages.hasPrevious());
+        booksResponse.setCurrentPage(bookPages.getNumber());
         return booksResponse;
     }
 

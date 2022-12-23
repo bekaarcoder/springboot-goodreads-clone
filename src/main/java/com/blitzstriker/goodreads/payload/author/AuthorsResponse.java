@@ -1,4 +1,4 @@
-package com.blitzstriker.goodreads.payload.book;
+package com.blitzstriker.goodreads.payload.author;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class BooksResponse {
-    private List<BookResponse> books;
+public class AuthorsResponse {
+    private List<AuthorResponse> authors;
     private Integer pageNumber;
     private Integer pageSize;
     private Integer totalElements;

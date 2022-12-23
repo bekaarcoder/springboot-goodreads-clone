@@ -1,8 +1,10 @@
 package com.blitzstriker.goodreads.controllers;
 
+import com.blitzstriker.goodreads.config.AppConstants;
 import com.blitzstriker.goodreads.payload.ApiResponse;
 import com.blitzstriker.goodreads.payload.author.AuthorDto;
 import com.blitzstriker.goodreads.payload.author.AuthorResponse;
+import com.blitzstriker.goodreads.payload.author.AuthorsResponse;
 import com.blitzstriker.goodreads.services.AuthorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +50,15 @@ public class AuthorController {
     public ResponseEntity<List<AuthorResponse>> findAuthorsByName(@PathVariable("keyword") String keyword) {
         List<AuthorResponse> authors = authorService.findAuthorByName(keyword);
         return new ResponseEntity<>(authors, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<AuthorsResponse> getAllAuthors(
+            @RequestParam(value = "pageNumber", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) Integer pageSize
+    ) {
+        AuthorsResponse authorsResponse = authorService.getAllAuthors(pageNumber, pageSize);
+        return new ResponseEntity<>(authorsResponse, HttpStatus.OK);
     }
 
 }
